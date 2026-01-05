@@ -1,0 +1,73 @@
+version: "3"
+
+vars:
+  RINKHALS_CONFIG: anycubic_kobra_rockchip_rv1106g3_rinkhals
+  DC_SERVICE_NAME: builder
+
+tasks:
+  .compose:
+    internal: true
+    cmd:
+      docker compose run
+        --rm
+        --remove-orphans
+        {{ .DC_SERVICE_NAME }}
+        bash -c "{{ .cmd }}"
+  .make:
+    internal: true
+    cmd:
+      task: .compose
+      vars:
+        cmd: "make {{ .target }}"
+
+  run:
+    desc: Run a shell in the builder
+    cmds:
+      - task: .compose
+        vars:
+          cmd: bash
+
+  olddefconfig:
+    desc: Update (old) config to (new) buildroot
+    cmds:
+      - task: .make
+        vars:
+          target: olddefconfig
+
+  savedefconfig:
+    desc: Save minimalized config
+    cmds:
+      - task: .make
+        vars:
+          target: savedefconfig
+
+  menuconfig:
+    desc: Edit the build (kconfig) configuration.
+    cmds:
+      - task: .make
+        vars:
+          target: menuconfig
+
+  distclean:
+    desc: Clean distribution
+    cmds:
+      - task: .make
+        vars:
+          target: distclean
+
+  build.builder:
+    desc: Build the build container
+    cmds:
+      - docker compose build
+          --build-arg ARCH=$ARCH
+          --build-arg GCC_PREFIX=$GCC_PREFIX
+          --no-cache
+          {{ .DC_SERVICE_NAME }}
+
+  build:
+    desc: Build
+    cmds:
+      - task: .make
+        vars:
+          target: "-j$(nproc)"
+

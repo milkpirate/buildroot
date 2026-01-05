@@ -1,0 +1,12 @@
+# docker compose run builder
+
+services:
+  builder:
+    container_name: builder
+#    user: <uid:gid>
+    build:
+      dockerfile: builder.Dockerfile
+      context: .
+    environment: {}
+    volumes:
+      - .:/repo
