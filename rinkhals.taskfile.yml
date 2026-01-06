@@ -69,5 +69,5 @@ tasks:
     cmds:
       - task: .make
         vars:
-          target: "" # "-j$(nproc)"
+          target: "-j$(nproc)"
 
