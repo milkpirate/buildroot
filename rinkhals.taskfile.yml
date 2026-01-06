@@ -2,7 +2,7 @@ version: "3"
 
 vars:
   RINKHALS_CONFIG: anycubic_kobra_rockchip_rv1106g3_rinkhals
-  DC_SERVICE_NAME: builder
+  DC_SERVICE_NAME: br-builder
 
 tasks:
   .compose:
@@ -69,5 +69,5 @@ tasks:
     cmds:
       - task: .make
         vars:
-          target: "-j$(nproc)"
+          target: "" # "-j$(nproc)"
 
