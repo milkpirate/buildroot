@@ -64,6 +64,17 @@ tasks:
           --no-cache
           {{ .DC_SERVICE_NAME }}
 
+  wsl.unspaced_path:
+    desc: |
+      WSL inherits the PATH variables from Windows, which might include spaces in the paths.
+      Buildroot does not like this and this produces a PATH line with space free paths.
+      The output of this can be `eval`ed.
+    vars:
+      path:
+        sh: echo $PATH | tr ':' '\n' | grep -v ' ' | tr '\n' ':' | sed 's|:$||'
+    cmds:
+      - echo export PATH={{ .path }}
+
   build:
     desc: Build
     cmds:
